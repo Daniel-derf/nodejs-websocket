@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Websocket Chat</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+        background-color: rgb(143, 141, 141);
+      }
+
+      #form {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.5rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        height: 4rem;
+        box-sizing: border-box;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      #input {
+        flex: 1;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      #input:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      }
+
+      #form > button {
+        background: #007bff;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        margin-left: 0.5rem;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      #form > button:hover {
+        background: #0056b3;
+        transform: scale(1.05);
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        margin-left: 10%;
+        margin-right: 10%;
+        padding: 0;
+      }
+
+      #messages > li {
+        padding: 0.5rem 1rem;
+        margin: 0.5rem;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, background-color 0.3s;
+      }
+
+      #messages > li:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.02);
+      }
+
+      #messages > li:nth-child(odd) {
+        background: #f7f7f7;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="" id="form">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      const message = document.getElementById("messages");
+      const input = document.getElementById("input");
+
+      document.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit("message", input.value);
+          input.value = "";
+        }
+      });
+
+      socket.on("message", (msg) => {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        message.appendChild(li);
+      });
+    </script>
+  </body>
+</html>
